@@ -21,7 +21,7 @@ def main() -> None:
     repository = get_env_var("GITHUB_REPOSITORY")
 
     github_issue = get_github_issue(
-        token=github_token, repository_name=repository, issue_id=github_issue_id
+        token=github_token, repository=repository, issue_id=github_issue_id
     )
 
     print(f"Processing issue: {github_issue.title}")
