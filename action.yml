@@ -15,9 +15,6 @@ inputs:
   github_event_name:
     description: 'Name of the GitHub event that triggered the action'
     required: true
-  github_event_action:
-    description: 'Action type of the GitHub event'
-    required: true
   github_issue_id:
     description: 'Unique ID of the GitHub issue'
     required: true

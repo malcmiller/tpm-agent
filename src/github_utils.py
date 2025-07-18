@@ -2,6 +2,10 @@ from enum import Enum
 from github import Github, Issue
 import sys
 
+class GithubEvent(Enum):
+    ISSUE = "issues"
+    ISSUE_COMMENT = "issue_comment"
+    
 class GithubLabel(Enum):
     VSWE_ASSIGN = "vswe-assign"
     VTPM_REVIEW = "vtpm-review"

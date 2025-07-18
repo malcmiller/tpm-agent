@@ -5,9 +5,6 @@ on:
   push:
     branches:
       - main
-env:
-  INPUT_GITHUB_EVENT_NAME: "issues"
-  INPUT_GITHUB_EVENT_ACTION: "opened"
 
 jobs:
   test-tpm-agent:
@@ -53,8 +50,7 @@ jobs:
       - name: Run Issue Enhancer Agent
         env:
           INPUT_CHECK_ALL: 'True'
-          INPUT_GITHUB_EVENT_NAME: ${{ env.INPUT_GITHUB_EVENT_NAME }}
-          INPUT_GITHUB_EVENT_ACTION: ${{ env.INPUT_GITHUB_EVENT_ACTION }}
+          INPUT_GITHUB_EVENT_NAME: "issues"
           INPUT_GITHUB_ISSUE_ID: ${{ matrix.issue_id }}
           INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INPUT_AZURE_OPENAI_TARGET_URI: ${{ secrets.AZURE_OPENAI_TARGET_URI }}
@@ -64,7 +60,6 @@ jobs:
           docker run --rm \
             -e INPUT_CHECK_ALL \
             -e INPUT_GITHUB_EVENT_NAME \
-            -e INPUT_GITHUB_EVENT_ACTION \
             -e INPUT_GITHUB_ISSUE_ID \
             -e INPUT_GITHUB_TOKEN \
             -e INPUT_AZURE_OPENAI_TARGET_URI \
