@@ -24,11 +24,8 @@ inputs:
   github_token:
     description: 'GitHub token with repo access'
     required: true
-  azure_openai_endpoint:
-    description: 'Azure OpenAI endpoint URL'
-    required: true
-  azure_openai_deployment:
-    description: 'Azure OpenAI deployment name'
+  azure_openai_target_uri:
+    description: 'Azure OpenAI target URI'
     required: true
   azure_openai_api_key:
     description: 'API key for Azure OpenAI'

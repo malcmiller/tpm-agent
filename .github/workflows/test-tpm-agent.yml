@@ -57,8 +57,7 @@ jobs:
           INPUT_GITHUB_EVENT_ACTION: ${{ env.INPUT_GITHUB_EVENT_ACTION }}
           INPUT_GITHUB_ISSUE_ID: ${{ matrix.issue_id }}
           INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
-          INPUT_AZURE_OPENAI_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_DEPLOYMENT }}
+          INPUT_AZURE_OPENAI_TARGET_URI: ${{ secrets.AZURE_OPENAI_TARGET_URI }}
           INPUT_AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
