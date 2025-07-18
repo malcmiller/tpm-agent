@@ -1,4 +1,4 @@
-from github_utils import get_github_issue
+from github_utils import get_github_issue, GithubLabel
 from utils import get_env_var
 
 
@@ -24,7 +24,16 @@ def main() -> None:
         token=github_token, repository=repository, issue_id=github_issue_id
     )
 
+    if check_all and GithubLabel.VTPM_IGNORE.value in github_issue.labels:
+        print(f"Issue {github_issue_id} is ignored due to label {GithubLabel.VTPM_IGNORE.value}.")
+        return
+    
+    if not check_all and GithubLabel.VTPM_REVIEW.value not in github_issue.labels:
+        print(f"Issue {github_issue_id} does not require review due to missing label {GithubLabel.VTPM_REVIEW.value}.")
+        return
+
     print(f"Processing issue: {github_issue.title}")
+    print(f"Event Name: {github_event_name}, Action: {github_event_action}")
 
 
 if __name__ == "__main__":
