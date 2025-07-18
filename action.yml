@@ -1,0 +1,42 @@
+name: 'Issue Enhancer Agent'
+description: 'An AI-powered GitHub Action that enhances issue descriptions, comments, and labels using Semantic Kernel and Azure OpenAI.'
+author: 'Malcolm Miller'
+branding:
+  color: 'blue'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+
+inputs:
+  check_all:
+    description: 'Whether to check all issues (true/false)'
+    required: false
+  github_event_name:
+    description: 'Name of the GitHub event that triggered the action'
+    required: true
+  github_event_action:
+    description: 'Action type of the GitHub event'
+    required: true
+  github_issue_id:
+    description: 'Unique ID of the GitHub issue'
+    required: true
+  github_token:
+    description: 'GitHub token with repo access'
+    required: true
+  azure_openai_endpoint:
+    description: 'Azure OpenAI endpoint URL'
+    required: true
+  azure_openai_deployment:
+    description: 'Azure OpenAI deployment name'
+    required: true
+  azure_openai_api_key:
+    description: 'API key for Azure OpenAI'
+    required: true
+  repository:
+    description: 'GitHub repository name (owner/repo)'
+    required: true
+
+outputs:
+  enhanced_summary:
+    description: 'AI-generated summary or insight about the issue'
