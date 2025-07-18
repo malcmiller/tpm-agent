@@ -8,6 +8,7 @@ from github_utils import GithubEvent, GithubLabel, get_github_issue, has_label
 from openai_utils import initialize_kernel, run_completion
 from prompts import build_user_story_eval_prompt
 from utils import get_env_var
+from response_models import UserStoryEvalResponse
 
 
 def handle_github_issues_event(issue: Issue, kernel: Kernel) -> None:
@@ -15,8 +16,9 @@ def handle_github_issues_event(issue: Issue, kernel: Kernel) -> None:
 
     # Run completion
     try:
-        response = asyncio.run(run_completion(kernel, messages))
-        print(f"AI Response for Issue {issue.number}:\n\n{response}")
+        response_text = asyncio.run(run_completion(kernel, messages))
+        response = UserStoryEvalResponse.from_text(response_text)
+        print(f"AI Response for Issue {issue.number} (Markdown):\n\n{response.to_markdown()}")
     except Exception as e:
         print(f"Error running Azure OpenAI completion: {e}", file=sys.stderr)
         sys.exit(1)
@@ -67,12 +69,12 @@ def main() -> None:
         azure_openai_api_key=azure_openai_api_key,
     )
 
-
     if github_event_name == GithubEvent.ISSUE.value:
         handle_github_issues_event(github_issue, kernel)
     else:
         print(f"Unsupported GitHub event: {github_event_name}", file=sys.stderr)
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
