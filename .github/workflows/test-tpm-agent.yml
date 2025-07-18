@@ -67,8 +67,7 @@ jobs:
             -e INPUT_GITHUB_EVENT_ACTION \
             -e INPUT_GITHUB_ISSUE_ID \
             -e INPUT_GITHUB_TOKEN \
-            -e INPUT_AZURE_OPENAI_ENDPOINT \
-            -e INPUT_AZURE_OPENAI_DEPLOYMENT \
+            -e INPUT_AZURE_OPENAI_TARGET_URI \
             -e INPUT_AZURE_OPENAI_API_KEY \
             -e GITHUB_REPOSITORY \
             tpm-agent
