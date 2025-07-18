@@ -138,9 +138,12 @@ class UserStoryEvalResponse:
             f"Labels: {', '.join(self.labels)}",
             f"Ready to Work: {yn_emoji(self.ready_to_work)}",
         ]
-        # Only add Base Story Not Clear if not ready to work
-        if not self.ready_to_work:
-            lines.append(f"Base Story Not Clear: {yn_emoji(self.base_story_not_clear)}")
+ 
+        if not self.ready_to_work and self.base_story_not_clear:
+            lines.append(
+                "\n\n**❌ Suggestions could not be provided because the original story is unclear or lacks meaningful value. Please rewrite the title and description to clearly explain the story's purpose and value.**"
+            )
+            
         if self.suggestions and (not self.ready_to_work and not self.base_story_not_clear):
             lines.append("\n### Suggestions")
             lines.append(self.suggestions.to_markdown())
