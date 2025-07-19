@@ -20,11 +20,11 @@ class UserStorySuggestions:
     def to_markdown(self) -> str:
         lines = []
         if self.title:
-            lines.append(f"Title: {self.title}")
+            lines.append(f"**Title**: {self.title}\n\n")
         if self.description:
-            lines.append(f"Description: {self.description}")
+            lines.append(f"**Description**: {self.description}\n\n")
         if self.acceptance_criteria:
-            lines.append("Acceptance Criteria:")
+            lines.append("**Acceptance Criteria**:")
             for criterion in self.acceptance_criteria:
                 lines.append(f"- {criterion}")
         return "\n".join(lines)
@@ -127,16 +127,16 @@ class UserStoryEvalResponse:
         def yn_emoji(val: bool) -> str:
             return "✅" if val else "❌"
         lines = [
-            "### Evaluation",
-            f"Summary: {self.summary}",
-            "Completeness:",
-            f" - Title: {yn_emoji(self.title_complete)}",
-            f" - Description: {yn_emoji(self.description_complete)}",
-            f" - Acceptance Criteria: {yn_emoji(self.acceptance_criteria_complete)}",
-            f"Importance: {self.importance}",
-            f"Acceptance Criteria Evaluation: {self.acceptance_criteria_evaluation}",
-            f"Labels: {', '.join(self.labels)}",
-            f"Ready to Work: {yn_emoji(self.ready_to_work)}",
+            "### 🤖 **AI-enhanced Evaluation**",
+            f"**Summary**: {self.summary}",
+            "**Completeness**:",
+            f" - Title: {yn_emoji(self.title_complete)}\n",
+            f" - Description: {yn_emoji(self.description_complete)}\n",
+            f" - Acceptance Criteria: {yn_emoji(self.acceptance_criteria_complete)}\n\n",
+            f"**Importance**: {self.importance}\n\n",
+            f"**Acceptance Criteria Evaluation**: {self.acceptance_criteria_evaluation}\n\n",
+            f"**Suggested Labels**: {', '.join(self.labels)}\n\n",
+            f"**Ready to Work**: {yn_emoji(self.ready_to_work)}\n",
         ]
  
         if not self.ready_to_work and self.base_story_not_clear:
