@@ -1,17 +1,18 @@
 from enum import Enum
-from github import Github, Issue
+from github import Github
+from github.Issue import Issue
 import sys
 
 class GithubEvent(Enum):
     ISSUE = "issues"
     ISSUE_COMMENT = "issue_comment"
-    
+
 class GithubLabel(Enum):
     VSWE_ASSIGN = "vswe-assign"
     VTPM_REVIEW = "vtpm-review"
     VTPM_IGNORE = "vtpm-ignore"
 
-def has_label(issue: Issue.Issue, label_name: str) -> bool:
+def has_label(issue: Issue, label_name: str) -> bool:
     """
     Check if a GitHub issue has a label with the given name (case-insensitive).
 
@@ -26,7 +27,7 @@ def has_label(issue: Issue.Issue, label_name: str) -> bool:
         return False
     return any(getattr(label, "name", "").lower() == label_name.lower() for label in issue.labels)
 
-def get_github_issue(token: str, repository: str, issue_id: int) -> Issue.Issue:
+def get_github_issue(token: str, repository: str, issue_id: int) -> Issue:
     """
     Fetch a GitHub issue by its ID.
 
@@ -50,3 +51,21 @@ def get_github_issue(token: str, repository: str, issue_id: int) -> Issue.Issue:
         print(f"Error fetching GitHub issue: {e}", file=sys.stderr)
         sys.exit(1)
 
+
+def create_github_issue_comment(issue: Issue, comment: str) -> bool:
+    """
+    Create a comment on a GitHub issue with detailed error reporting.
+
+    Args:
+        issue (Issue): The GitHub issue object.
+        comment (str): The comment text to post.
+
+    Returns:
+        bool: True if the comment was created successfully, False otherwise.
+    """
+    try:
+        issue.create_comment(comment)
+        return True
+    except Exception as e:
+        print(f"Error creating GitHub issue comment: {type(e).__name__}: {e}", file=sys.stderr)
+        return False

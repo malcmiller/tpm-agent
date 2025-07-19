@@ -4,7 +4,7 @@ import sys
 from github.Issue import Issue
 from semantic_kernel import Kernel
 
-from github_utils import GithubEvent, GithubLabel, get_github_issue, has_label
+from github_utils import GithubEvent, GithubLabel, get_github_issue, has_label, create_github_issue_comment
 from openai_utils import initialize_kernel, run_completion
 from prompts import build_user_story_eval_prompt
 from utils import get_env_var
@@ -17,8 +17,9 @@ def handle_github_issues_event(issue: Issue, kernel: Kernel) -> None:
     # Run completion
     try:
         response_text = asyncio.run(run_completion(kernel, messages))
-        response = UserStoryEvalResponse.from_text(response_text)
-        print(f"AI Response for Issue {issue.number} (Markdown):\n\n{response.to_markdown()}")
+        response = UserStoryEvalResponse.from_text(response_text).to_markdown()
+        create_github_issue_comment(issue, response)
+        print(f"AI Response for Issue {issue.number} (Markdown):\n\n{response}")
     except Exception as e:
         print(f"Error running Azure OpenAI completion: {e}", file=sys.stderr)
         sys.exit(1)

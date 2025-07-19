@@ -141,7 +141,7 @@ class UserStoryEvalResponse:
  
         if not self.ready_to_work and self.base_story_not_clear:
             lines.append(
-                "\n\n**❌ Suggestions could not be provided because the original story is unclear or lacks meaningful value. Please rewrite the title and description to clearly explain the story's purpose and value.**"
+                "\n**❌ Suggestions could not be provided because the original story is unclear or lacks meaningful value. Please rewrite the title and description to clearly explain the story's purpose and value.**"
             )
             
         if self.suggestions and (not self.ready_to_work and not self.base_story_not_clear):
