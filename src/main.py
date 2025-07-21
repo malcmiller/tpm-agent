@@ -1,7 +1,5 @@
 import asyncio
 import sys
-from tokenize import Comment
-from turtle import update
 
 from github.Issue import Issue
 from semantic_kernel import Kernel
