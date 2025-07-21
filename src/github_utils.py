@@ -84,7 +84,7 @@ def get_ai_enhanced_comment(issue: Issue):
         str: The content of the AI-enhanced comment, or None if not found.
     """
     for comment in reversed(list(issue.get_comments())):
-        if "🤖 AI-enhanced Evaluation" in comment.body:
+        if "AI-enhanced Evaluation".lower() in comment.body.lower():
             return comment.body
     return None
 
