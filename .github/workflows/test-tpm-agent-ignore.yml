@@ -1,10 +1,7 @@
-name: Test TMP agent in ignore mode
+name: Test Issue Enhancer Agent
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   test-tpm-agent:
@@ -49,7 +46,7 @@ jobs:
 
       - name: Run Issue Enhancer Agent
         env:
-          INPUT_CHECK_ALL: 'False'
+          INPUT_CHECK_ALL: 'True'
           INPUT_GITHUB_EVENT_NAME: "issues"
           INPUT_GITHUB_ISSUE_ID: ${{ matrix.issue_id }}
           INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

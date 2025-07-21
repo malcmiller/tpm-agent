@@ -1,13 +1,13 @@
 name: Test TMP agent in check all mode
 
 on:
-  workflow_dispatch:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
 
 jobs:
   test-tpm-agent:
-    strategy:
-      matrix:
-        issue_id: [1, 2, 3]
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -47,9 +47,10 @@ jobs:
       - name: Run Issue Enhancer Agent
         env:
           INPUT_CHECK_ALL: 'True'
-          INPUT_GITHUB_EVENT_NAME: "issues"
-          INPUT_GITHUB_ISSUE_ID: ${{ matrix.issue_id }}
+          INPUT_GITHUB_EVENT_NAME: ${{ github.event.action }}
+          INPUT_GITHUB_ISSUE_ID: ${{ github.event.issue.number }}
           INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_GITHUB_ISSUE_COMMENT_ID: ${{ github.event.comment.id }}
           INPUT_AZURE_OPENAI_TARGET_URI: ${{ secrets.AZURE_OPENAI_TARGET_URI }}
           INPUT_AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -59,6 +60,7 @@ jobs:
             -e INPUT_GITHUB_EVENT_NAME \
             -e INPUT_GITHUB_ISSUE_ID \
             -e INPUT_GITHUB_TOKEN \
+            -e INPUT_GITHUB_ISSUE_COMMENT_ID \
             -e INPUT_AZURE_OPENAI_TARGET_URI \
             -e INPUT_AZURE_OPENAI_API_KEY \
             -e GITHUB_REPOSITORY \
