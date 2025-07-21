@@ -46,8 +46,11 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
 
     if ai_enhanced_comment is None:
         return
-    print(ai_enhanced_comment)
+    
     userStoryEval = UserStoryEvalResponse.from_text(ai_enhanced_comment)
+
+    print(userStoryEval)
+    print(userStoryEval.suggestions)
 
     update_github_issue(
         issue,
