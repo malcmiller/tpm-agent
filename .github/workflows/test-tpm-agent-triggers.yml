@@ -1,4 +1,4 @@
-name: Test TMP agent in check all mode
+name: TPM Agent with Triggers
 
 on:
   issues:
