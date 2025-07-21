@@ -118,7 +118,7 @@ def main() -> None:
                 file=sys.stderr,
             )
             sys.exit(1)
-        handle_github_comment_event(github_issue, github_issue_comment_id, kernel)
+        handle_github_comment_event(github_issue, github_issue_comment_id)
     else:
         print(f"Unsupported GitHub event: {github_event_name}", file=sys.stderr)
         sys.exit(1)
