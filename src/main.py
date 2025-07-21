@@ -46,7 +46,7 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
 
     if ai_enhanced_comment is None:
         return
-
+    print(ai_enhanced_comment)
     userStoryEval = UserStoryEvalResponse.from_text(ai_enhanced_comment)
 
     update_github_issue(
@@ -56,6 +56,18 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
         labels=userStoryEval.labels,
     )
 
+
+    # quoted_body = "\n".join([f"> {line}" for line in ai_enhanced_comment.body.strip().splitlines()])
+
+    # # Confirmation comment quoting the original enhancement comment
+    # confirmation_comment = (
+    #     f"✅ Applied enhancements based on the following comment:\n\n"
+    #     f"{quoted_body}"
+    # )
+
+    # create_github_issue_comment(
+    #     issue, confirmation_comment
+    # )
 
 def main() -> None:
     """Main entry point for the issue enhancer agent."""
