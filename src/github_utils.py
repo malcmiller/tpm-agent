@@ -70,10 +70,7 @@ def create_github_issue_comment(issue: Issue, comment: str) -> bool:
         print(f"Error creating GitHub issue comment: {type(e).__name__}: {e}", file=sys.stderr)
         return False
 
-def get_all_issue_comments(issue: Issue,):
-    return issue.get_comments()
-
-def get_ai_enhanced_comment(issue: Issue):
+def get_ai_enhanced_comment(issue: Issue) -> str:
     """
     Get the AI-enhanced comment from the issue comments.
 
@@ -85,28 +82,60 @@ def get_ai_enhanced_comment(issue: Issue):
     """
     for comment in reversed(list(issue.get_comments())):
         if "AI-enhanced Evaluation".lower() in comment.body.lower():
+            print(f"Found AI-enhanced comment in issue #{issue.number} (comment id: {comment.id}).")
             return comment.body
+    print(f"No AI-enhanced comment found in issue #{issue.number}.")
     return None
 
 def get_github_comment(issue: Issue, comment_id: int):
+    """
+    Retrieve a specific comment by its ID from a GitHub issue.
+
+    Args:
+        issue (Issue): The GitHub issue object.
+        comment_id (int): The ID of the comment to retrieve.
+
+    Returns:
+        The comment object if found.
+
+    Raises:
+        Exception: If the comment is not found or another error occurs.
+    """
     try:
         comments = issue.get_comments()
         for comment in comments:
             if comment.id == comment_id:
+                print(f"Found comment with id {comment_id} in issue #{issue.number}.")
                 return comment
         raise Exception(f"Comment with id {comment_id} not found")
     except Exception as e:
-        print(f"Error fetching GitHub comment: {type(e).__name__}: {e}")
+        print(f"Error fetching GitHub comment: {type(e).__name__}: {e}", file=sys.stderr)
         raise
 
-def update_github_issue(issue: Issue, title: str = None, body: str = None, labels: str = None):
+def update_github_issue(issue: Issue, title: str = None, body: str = None, labels: list = None) -> bool:
+    """
+    Update the title, body, or labels of a GitHub issue.
+
+    Args:
+        issue (Issue): The GitHub issue object.
+        title (str, optional): New title for the issue.
+        body (str, optional): New body for the issue.
+        labels (list, optional): New labels for the issue.
+
+    Returns:
+        bool: True if the update was successful, False otherwise.
+    """
     try:
-        if title is not None:
+        if title is not None and title != "":
             issue.edit(title=title)
-        if body is not None:
+            print(f"Updated title for issue #{issue.number}.")
+        if body is not None and body != "":
             issue.edit(body=body)
-        if labels is not None:
+            print(f"Updated body for issue #{issue.number}.")
+        if labels is not None and labels != []:
             issue.edit(labels=labels)
+            print(f"Updated labels for issue #{issue.number}.")
+        return True
     except Exception as e:
-        print(f"Error updating GitHub issue: {type(e).__name__}: {e}")
-        raise
+        print(f"Error updating GitHub issue: {type(e).__name__}: {e}", file=sys.stderr)
+        return False

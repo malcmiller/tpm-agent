@@ -45,7 +45,6 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
     ai_enhanced_comment = get_ai_enhanced_comment(issue)
 
     if ai_enhanced_comment is None:
-        print(f"No AI-enhanced comment found for issue {issue.number}.")
         return
 
     userStoryEval = UserStoryEvalResponse.from_text(ai_enhanced_comment)
