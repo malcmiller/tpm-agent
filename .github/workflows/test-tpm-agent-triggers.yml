@@ -14,8 +14,10 @@ jobs:
       contents: read
 
     steps:
-      - name: Test Trigger
-        run: echo ${{github.event}}
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
     #   - name: Checkout code
     #     uses: actions/checkout@v4
