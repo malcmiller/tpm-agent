@@ -69,3 +69,44 @@ def create_github_issue_comment(issue: Issue, comment: str) -> bool:
     except Exception as e:
         print(f"Error creating GitHub issue comment: {type(e).__name__}: {e}", file=sys.stderr)
         return False
+
+def get_all_issue_comments(issue: Issue,):
+    return issue.get_comments()
+
+def get_ai_enhanced_comment(issue: Issue):
+    """
+    Get the AI-enhanced comment from the issue comments.
+
+    Args:
+        issue (Issue): The GitHub issue object.
+
+    Returns:
+        str: The content of the AI-enhanced comment, or None if not found.
+    """
+    for comment in issue.get_comments().reversed():
+        if "🤖 AI-enhanced Evaluation" in comment.body:
+            return comment.body
+    return None
+
+def get_github_comment(issue: Issue, comment_id: int):
+    try:
+        comments = issue.get_comments()
+        for comment in comments:
+            if comment.id == comment_id:
+                return comment
+        raise Exception(f"Comment with id {comment_id} not found")
+    except Exception as e:
+        print(f"Error fetching GitHub comment: {type(e).__name__}: {e}")
+        raise
+
+def update_github_issue(issue: Issue, title: str = None, body: str = None, labels: str = None):
+    try:
+        if title is not None:
+            issue.edit(title=title)
+        if body is not None:
+            issue.edit(body=body)
+        if labels is not None:
+            issue.edit(labels=labels)
+    except Exception as e:
+        print(f"Error updating GitHub issue: {type(e).__name__}: {e}")
+        raise

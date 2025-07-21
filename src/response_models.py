@@ -17,6 +17,29 @@ class UserStorySuggestions:
             acceptance_criteria=data.get("acceptance_criteria", []),
         )
 
+    @classmethod
+    def from_markdown(cls, markdown: str):
+        """
+        Parse a markdown string and return a UserStorySuggestions instance.
+        """
+        title = ""
+        description = ""
+        acceptance_criteria = []
+        lines = markdown.splitlines()
+        section = None
+        for line in lines:
+            if line.strip().startswith("**Title**:"):
+                title = line.split(":", 1)[-1].strip()
+            elif line.strip().startswith("**Description**:"):
+                description = line.split(":", 1)[-1].strip()
+            elif line.strip().startswith("**Acceptance Criteria**:"):
+                section = "acceptance_criteria"
+            elif section == "acceptance_criteria" and line.strip().startswith("-"):
+                acceptance_criteria.append(line.lstrip("- ").strip())
+            elif section == "acceptance_criteria" and not line.strip().startswith("-"):
+                section = None
+        return cls(title=title, description=description, acceptance_criteria=acceptance_criteria)
+
     def to_markdown(self) -> str:
         lines = []
         if self.title:
@@ -121,6 +144,64 @@ class UserStoryEvalResponse:
             ready_to_work,
             base_story_not_clear,
             UserStorySuggestions.from_dict(suggestions_dict),
+        )
+
+    @classmethod
+    def from_markdown(cls, markdown: str):
+        """
+        Parse a markdown string and return a UserStoryEvalResponse instance.
+        """
+        def emoji_to_bool(val: str) -> bool:
+            return val.strip() == "✅"
+        lines = markdown.splitlines()
+        summary = ""
+        title_complete = False
+        description_complete = False
+        acceptance_criteria_complete = False
+        importance = ""
+        acceptance_criteria_evaluation = ""
+        labels = []
+        ready_to_work = False
+        base_story_not_clear = False
+        suggestions_md = []
+        in_suggestions = False
+        for line in lines:
+            if line.startswith("**Summary**:"):
+                summary = line.split(":", 1)[-1].strip()
+            elif line.strip().startswith("- Title:"):
+                title_complete = emoji_to_bool(line.split(":", 1)[-1].strip())
+            elif line.strip().startswith("- Description:"):
+                description_complete = emoji_to_bool(line.split(":", 1)[-1].strip())
+            elif line.strip().startswith("- Acceptance Criteria:"):
+                acceptance_criteria_complete = emoji_to_bool(line.split(":", 1)[-1].strip())
+            elif line.startswith("**Importance**:"):
+                importance = line.split(":", 1)[-1].strip()
+            elif line.startswith("**Acceptance Criteria Evaluation**:"):
+                acceptance_criteria_evaluation = line.split(":", 1)[-1].strip()
+            elif line.startswith("**Suggested Labels**:"):
+                labels = [l.strip() for l in line.split(":", 1)[-1].split(",") if l.strip()]
+            elif line.startswith("**Ready to Work**:"):
+                ready_to_work = emoji_to_bool(line.split(":", 1)[-1].strip())
+            elif "Base Story Not Clear:" in line:
+                base_story_not_clear = emoji_to_bool(line.split(":", 1)[-1].strip())
+            elif "could not be provided because the original story is unclear" in line:
+                base_story_not_clear = True
+            elif line.strip().startswith("### Suggestions"):
+                in_suggestions = True
+            elif in_suggestions:
+                suggestions_md.append(line)
+        suggestions = UserStorySuggestions.from_markdown("\n".join(suggestions_md)) if suggestions_md else None
+        return cls(
+            summary,
+            title_complete,
+            description_complete,
+            acceptance_criteria_complete,
+            importance,
+            acceptance_criteria_evaluation,
+            labels,
+            ready_to_work,
+            base_story_not_clear,
+            suggestions,
         )
 
     def to_markdown(self) -> str:

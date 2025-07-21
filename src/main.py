@@ -1,20 +1,32 @@
 import asyncio
 import sys
+from tokenize import Comment
+from turtle import update
 
 from github.Issue import Issue
 from semantic_kernel import Kernel
 
-from github_utils import GithubEvent, GithubLabel, get_github_issue, has_label, create_github_issue_comment
+from github_utils import (
+    GithubEvent,
+    GithubLabel,
+    get_github_issue,
+    get_github_comment,
+    get_ai_enhanced_comment,
+    has_label,
+    create_github_issue_comment,
+    update_github_issue,
+)
 from openai_utils import initialize_kernel, run_completion
 from prompts import build_user_story_eval_prompt
 from utils import get_env_var
 from response_models import UserStoryEvalResponse
 
+COMMENT_LOOKUP = "apply changes"
+
 
 def handle_github_issues_event(issue: Issue, kernel: Kernel) -> None:
     messages = build_user_story_eval_prompt(issue.title, issue.body)
 
-    # Run completion
     try:
         response_text = asyncio.run(run_completion(kernel, messages))
         response = UserStoryEvalResponse.from_text(response_text).to_markdown()
@@ -25,6 +37,29 @@ def handle_github_issues_event(issue: Issue, kernel: Kernel) -> None:
         sys.exit(1)
 
 
+def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
+    comment = get_github_comment(issue, issue_comment_id)
+
+    if COMMENT_LOOKUP not in comment.body:
+        print(f"Comment {issue_comment_id} does not require processing.")
+        return
+
+    ai_enhanced_comment = get_ai_enhanced_comment(issue)
+
+    if ai_enhanced_comment is None:
+        print(f"No AI-enhanced comment found for issue {issue.number}.")
+        return
+
+    userStoryEval = UserStoryEvalResponse.from_text(ai_enhanced_comment)
+
+    update_github_issue(
+        issue,
+        title=userStoryEval.suggestions.title,
+        body=userStoryEval.suggestions.description,
+        labels=userStoryEval.labels,
+    )
+
+
 def main() -> None:
     """Main entry point for the issue enhancer agent."""
 
@@ -33,6 +68,12 @@ def main() -> None:
         required=False,
         cast_func=lambda v: str(v).strip().lower() in ["1", "true", "yes"],
         default=False,
+    )
+    github_issue_comment_id = get_env_var(
+        "INPUT_GITHUB_ISSUE_COMMENT_ID",
+        required=False,
+        cast_func=int,
+        default=None,
     )
     github_event_name = get_env_var("INPUT_GITHUB_EVENT_NAME")
     github_issue_id = get_env_var("INPUT_GITHUB_ISSUE_ID", cast_func=int)
@@ -72,6 +113,14 @@ def main() -> None:
 
     if github_event_name == GithubEvent.ISSUE.value:
         handle_github_issues_event(github_issue, kernel)
+    elif github_event_name == GithubEvent.ISSUE_COMMENT.value:
+        if github_issue_comment_id is None:
+            print(
+                "Error: GITHUB_ISSUE_COMMENT_ID is required for issue comment events.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        handle_github_comment_event(github_issue, github_issue_comment_id, kernel)
     else:
         print(f"Unsupported GitHub event: {github_event_name}", file=sys.stderr)
         sys.exit(1)
