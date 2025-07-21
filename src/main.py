@@ -18,6 +18,7 @@ from openai_utils import initialize_kernel, run_completion
 from prompts import build_user_story_eval_prompt
 from utils import get_env_var
 from response_models import UserStoryEvalResponse
+from pprint import pprint
 
 COMMENT_LOOKUP = "apply changes"
 
@@ -49,8 +50,11 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
     
     userStoryEval = UserStoryEvalResponse.from_text(ai_enhanced_comment)
 
-    print(userStoryEval)
-    print(userStoryEval.suggestions)
+    pprint(userStoryEval.__dict__)
+    print(userStoryEval.suggestions.acceptance_criteria)
+    print(userStoryEval.suggestions.title)
+    print(userStoryEval.suggestions.acceptance_criteria)
+    print(userStoryEval.labels)
 
     update_github_issue(
         issue,
