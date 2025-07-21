@@ -48,7 +48,7 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
     if ai_enhanced_comment is None:
         return
     
-    userStoryEval = UserStoryEvalResponse.from_text(ai_enhanced_comment)
+    userStoryEval = UserStoryEvalResponse.from_markdown(ai_enhanced_comment)
 
     pprint(userStoryEval.__dict__)
     print(userStoryEval.suggestions.acceptance_criteria)
@@ -56,12 +56,12 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
     print(userStoryEval.suggestions.acceptance_criteria)
     print(userStoryEval.labels)
 
-    update_github_issue(
-        issue,
-        title=userStoryEval.suggestions.title,
-        body=userStoryEval.suggestions.description,
-        labels=userStoryEval.labels,
-    )
+    # update_github_issue(
+    #     issue,
+    #     title=userStoryEval.suggestions.title,
+    #     body=userStoryEval.suggestions.description,
+    #     labels=userStoryEval.labels,
+    # )
 
 
     # quoted_body = "\n".join([f"> {line}" for line in ai_enhanced_comment.body.strip().splitlines()])
