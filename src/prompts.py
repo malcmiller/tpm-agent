@@ -9,6 +9,7 @@ def build_user_story_eval_prompt(issue_title: str, issue_body: str) -> list:
         f"Body: {issue_body}\n\n"
 
         "## Evaluation Instructions\n"
+        "**IMPORTANT: When including the 'Refactored Story' section, you MUST always output all three fields: Title, Description, and Acceptance Criteria. If any field is unchanged, copy it verbatim from the original. Do NOT omit any field, even if unchanged.**\n\n"
         "Assess the issue as a candidate user story for engineering work. Your response must:\n"
         "1. Provide a concise, AI-enhanced summary or insight about the story.\n"
         "2. Confirm the presence of the following elements (respond only with 'Yes' or 'No'):\n"
@@ -50,7 +51,13 @@ def build_user_story_eval_prompt(issue_title: str, issue_body: str) -> list:
         "Acceptance Criteria:\n"
         "- <criterion one>\n"
         "- <criterion two>\n"
-        "- <etc...>\n"
+        "- <etc...>\n\n"
+        "Example (with unchanged fields):\n"
+        "Title: Original Title\n"
+        "Description: Original description text.\n"
+        "Acceptance Criteria:\n"
+        "- Original criterion one\n"
+        "- Original criterion two\n"
     )
 
     return [
