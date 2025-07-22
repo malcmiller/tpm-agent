@@ -116,6 +116,7 @@ def main() -> None:
     print(f"Event Name: {github_event_name}")
 
     if github_event_name == GithubEvent.ISSUE.value:
+
         azure_openai_target_uri = get_env_var("INPUT_AZURE_OPENAI_TARGET_URI")
         azure_openai_api_key = get_env_var("INPUT_AZURE_OPENAI_API_KEY")
 
@@ -129,17 +130,9 @@ def main() -> None:
     elif github_event_name == GithubEvent.ISSUE_COMMENT.value:
 
         github_issue_comment_id = get_env_var(
-            "INPUT_GITHUB_ISSUE_COMMENT_ID",
-            required=False,
-            default=None,
+            "INPUT_GITHUB_ISSUE_COMMENT_ID"
         )
-
-        if github_issue_comment_id is None:
-            print(
-                "Error: GITHUB_ISSUE_COMMENT_ID is required for issue comment events.",
-                file=sys.stderr,
-            )
-            sys.exit(1)
+    
         handle_github_comment_event(github_issue, int(github_issue_comment_id))
 
     else:

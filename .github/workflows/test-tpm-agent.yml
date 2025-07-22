@@ -7,7 +7,7 @@ jobs:
   test-tpm-agent:
     strategy:
       matrix:
-        issue_id: [1, 2, 3]
+        issue_id: [5, 6, 7, 8]
     runs-on: ubuntu-latest
     permissions:
       issues: write

@@ -65,6 +65,7 @@ def create_github_issue_comment(issue: Issue, comment: str) -> bool:
     """
     try:
         issue.create_comment(comment)
+        
         return True
     except Exception as e:
         print(f"Error creating GitHub issue comment: {type(e).__name__}: {e}", file=sys.stderr)
