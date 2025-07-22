@@ -1,4 +1,4 @@
-name: TPM Agent with Triggers
+name: Test TPM Agent Triggers
 
 on:
   issues:

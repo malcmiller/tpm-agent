@@ -1,4 +1,4 @@
-name: Test Issue Enhancer Agent
+name: Test TMP agent
 
 on:
   workflow_dispatch:
