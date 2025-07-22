@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-class UserStorySuggestions:
+class UserStoryRefactored:
     """
     Model for the Refactored Story section in the AI response.
     """
@@ -20,7 +20,8 @@ class UserStorySuggestions:
     @classmethod
     def from_markdown(cls, markdown: str):
         """
-        Parse a markdown string and return a UserStorySuggestions instance.
+        Parse a markdown string and return a UserStoryRefactored instance.
+        Handles both plain and bolded section headers.
         """
         title = ""
         description = ""
@@ -28,21 +29,26 @@ class UserStorySuggestions:
         lines = markdown.splitlines()
         section = None
         for line in lines:
-            if line.strip().startswith("Title:"):
-                title = line.split(":", 1)[-1].strip()
-            elif line.strip().startswith("Description:"):
-                description = line.split(":", 1)[-1].strip()
-            elif line.strip().startswith("Acceptance Criteria:"):
+            line_stripped = line.strip()
+            if line_stripped.startswith("**Title**:") or line_stripped.startswith("Title:"):
+                title = line_stripped.split(":", 1)[-1].strip()
+                section = None
+            elif line_stripped.startswith("**Description**:") or line_stripped.startswith("Description:"):
+                description = line_stripped.split(":", 1)[-1].strip()
+                section = None
+            elif line_stripped.startswith("**Acceptance Criteria**:") or line_stripped.startswith("Acceptance Criteria:"):
                 section = "acceptance_criteria"
-            elif section == "acceptance_criteria" and line.strip().startswith("-"):
-                acceptance_criteria.append(line.lstrip("- ").strip())
-            elif section == "acceptance_criteria" and not line.strip().startswith("-"):
+            elif section == "acceptance_criteria" and line_stripped.startswith("-"):
+                acceptance_criteria.append(line_stripped.lstrip("- ").strip())
+            elif section == "acceptance_criteria" and not line_stripped:
+                continue  # skip blank lines in criteria
+            elif section == "acceptance_criteria" and not line_stripped.startswith("-"):
                 section = None
         return cls(title=title, description=description, acceptance_criteria=acceptance_criteria)
 
     def to_markdown(self) -> str:
         """
-        Convert the suggestions to a markdown string.
+        Convert the refactored story to a markdown string.
         """
         lines = []
         if self.title:
@@ -80,7 +86,7 @@ class UserStoryEvalResponse:
         labels: List[str],
         ready_to_work: bool,
         base_story_not_clear: bool,
-        suggestions: Optional[UserStorySuggestions] = None,
+        refactored: Optional[UserStoryRefactored] = None,
     ):
         self.summary = summary
         self.title_complete = title_complete
@@ -91,7 +97,7 @@ class UserStoryEvalResponse:
         self.labels = labels
         self.ready_to_work = ready_to_work
         self.base_story_not_clear = base_story_not_clear
-        self.suggestions = suggestions or UserStorySuggestions()
+        self.refactored = refactored or UserStoryRefactored()
 
     @classmethod
     def from_text(cls, text: str):
@@ -113,7 +119,7 @@ class UserStoryEvalResponse:
         labels = []
         ready_to_work = False
         base_story_not_clear = False
-        suggestions_dict = {}
+        refactored_dict = {}
         section = None
         for line in lines:
             if line.startswith("Summary:"):
@@ -138,14 +144,14 @@ class UserStoryEvalResponse:
                 section = "refactored"
             elif section == "refactored":
                 if line.startswith("Title:"):
-                    suggestions_dict["title"] = line.split(":", 1)[-1].strip()
+                    refactored_dict["title"] = line.split(":", 1)[-1].strip()
                 elif line.startswith("Description:"):
-                    suggestions_dict["description"] = line.split(":", 1)[-1].strip()
+                    refactored_dict["description"] = line.split(":", 1)[-1].strip()
                 elif line.startswith("Acceptance Criteria:"):
-                    suggestions_dict["acceptance_criteria"] = []
+                    refactored_dict["acceptance_criteria"] = []
                 elif line.startswith("-"):
-                    if "acceptance_criteria" in suggestions_dict:
-                        suggestions_dict["acceptance_criteria"].append(line.lstrip("- ").strip())
+                    if "acceptance_criteria" in refactored_dict:
+                        refactored_dict["acceptance_criteria"].append(line.lstrip("- ").strip())
         return cls(
             summary,
             title_complete,
@@ -156,7 +162,7 @@ class UserStoryEvalResponse:
             labels,
             ready_to_work,
             base_story_not_clear,
-            UserStorySuggestions.from_dict(suggestions_dict),
+            UserStoryRefactored.from_dict(refactored_dict),
         )
 
     @classmethod
@@ -176,7 +182,7 @@ class UserStoryEvalResponse:
         labels = []
         ready_to_work = False
         base_story_not_clear = False
-        suggestions_md = []
+        refactored_md = []
         in_refactored = False
         for line in lines:
             if line.startswith("**Summary**:"):
@@ -202,8 +208,8 @@ class UserStoryEvalResponse:
             elif line.strip().startswith("### Refactored Story"):
                 in_refactored = True
             elif in_refactored:
-                suggestions_md.append(line)
-        suggestions = UserStorySuggestions.from_markdown("\n".join(suggestions_md)) if suggestions_md else None
+                refactored_md.append(line)
+        refactored = UserStoryRefactored.from_markdown("\n".join(refactored_md)) if refactored_md else None
         return cls(
             summary,
             title_complete,
@@ -214,7 +220,7 @@ class UserStoryEvalResponse:
             labels,
             ready_to_work,
             base_story_not_clear,
-            suggestions,
+            refactored,
         )
 
     def to_markdown(self) -> str:
@@ -236,7 +242,8 @@ class UserStoryEvalResponse:
             lines.append(
                 "\n**❌ Refactored Story could not be provided because the original story is unclear or lacks meaningful value. Please rewrite the title and description to clearly explain the story's purpose and value.**"
             )
-        if self.suggestions and (not self.ready_to_work and not self.base_story_not_clear):
+        if self.refactored and (not self.ready_to_work and not self.base_story_not_clear):
             lines.append("\n### Refactored Story")
-            lines.append(self.suggestions.to_markdown())
+            lines.append(self.refactored.to_markdown())
+            lines.append("\n Reply \"/apply\" to apply these updates.\n")
         return "\n".join(lines)
