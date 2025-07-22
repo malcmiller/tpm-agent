@@ -32,7 +32,7 @@ def handle_github_issues_event(issue: Issue, kernel: Kernel) -> None:
 
 
         # create_github_issue_comment(issue, response.to_markdown())
-        print(f"AI Response for Issue {issue.number} (Markdown):\n\n{response}")
+        print(f"AI Response for Issue {issue.number} (Markdown):\n\n{response.to_markdown()}")
     except Exception as e:
         print(f"Error running Azure OpenAI completion: {e}", file=sys.stderr)
         sys.exit(1)
