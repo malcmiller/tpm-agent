@@ -47,13 +47,13 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
 
     if ai_enhanced_comment is None:
         return
-    
+    print(ai_enhanced_comment)
     userStoryEval = UserStoryEvalResponse.from_markdown(ai_enhanced_comment)
-    print(userStoryEval.to_markdown())
-    print(userStoryEval.suggestions.title)
-    print(userStoryEval.suggestions.description)
-    print(userStoryEval.suggestions.acceptance_criteria)
-    print(userStoryEval.labels)
+    print(f"\n {userStoryEval.to_markdown()}")
+    print(f"\n {userStoryEval.suggestions.title}")
+    print(f"\n {userStoryEval.suggestions.description}")
+    print(f"\n {userStoryEval.suggestions.acceptance_criteria}")
+    print(f"\n {userStoryEval.labels}")
     # update_github_issue(
     #     issue,
     #     title=userStoryEval.suggestions.title,
