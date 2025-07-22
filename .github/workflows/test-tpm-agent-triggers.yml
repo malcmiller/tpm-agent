@@ -1,10 +1,10 @@
 name: Test TPM Agent Triggers
 
-on:
-  issues:
-    types: [opened, edited]
-  issue_comment:
-    types: [created]
+# on:
+#   issues:
+#     types: [opened, edited]
+#   issue_comment:
+#     types: [created]
 
 jobs:
   test-tpm-agent:
