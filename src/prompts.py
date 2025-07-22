@@ -41,7 +41,7 @@ def build_user_story_eval_prompt(issue_title: str, issue_body: str) -> list:
         "Base Story Not Clear: <True/False>\n\n"
 
         "### Refactored Story\n"
-        "(Include the full improved version only if Ready to Work is False AND Base Story Not Clear is False)\n"
+        "(Include this section only if Ready to Work is False AND Base Story Not Clear is False. Always return a full version of the user story — even if only one part needed editing.)\n"
         "Title: <refined title>\n"
         "Description: <expanded explanation with business value or user need>\n"
         "Acceptance Criteria:\n"
