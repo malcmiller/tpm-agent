@@ -28,8 +28,10 @@ def handle_github_issues_event(issue: Issue, kernel: Kernel) -> None:
 
     try:
         response_text = asyncio.run(run_completion(kernel, messages))
-        response = UserStoryEvalResponse.from_text(response_text).to_markdown()
-        create_github_issue_comment(issue, response)
+        response = UserStoryEvalResponse.from_text(response_text)
+
+
+        # create_github_issue_comment(issue, response.to_markdown())
         print(f"AI Response for Issue {issue.number} (Markdown):\n\n{response}")
     except Exception as e:
         print(f"Error running Azure OpenAI completion: {e}", file=sys.stderr)
@@ -50,9 +52,8 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
     
     userStoryEval = UserStoryEvalResponse.from_markdown(ai_enhanced_comment)
 
-    pprint(userStoryEval.__dict__)
-    print(userStoryEval.suggestions.acceptance_criteria)
     print(userStoryEval.suggestions.title)
+    print(userStoryEval.suggestions.description)
     print(userStoryEval.suggestions.acceptance_criteria)
     print(userStoryEval.labels)
 
