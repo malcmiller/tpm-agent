@@ -1,4 +1,4 @@
-name: Test TMP agent
+name: Test TMP agent in ignore all mode
 
 on:
   workflow_dispatch:
