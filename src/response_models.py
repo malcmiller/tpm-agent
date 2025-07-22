@@ -62,7 +62,7 @@ class UserStoryRefactored:
         if self.description:
             lines.append(f"**Description**: {self.description}\n")
         if self.acceptance_criteria:
-            lines.append("**Acceptance Criteria:**")
+            lines.append("**Acceptance Criteria**:")
             for criterion in self.acceptance_criteria:
                 lines.append(f"- {criterion}")
         return "\n".join(lines)

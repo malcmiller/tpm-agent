@@ -49,30 +49,26 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
         return
 
     userStoryEval = UserStoryEvalResponse.from_markdown(ai_enhanced_comment)
-    print(ai_enhanced_comment)
-    print(f"\n {userStoryEval.refactored.title}")
-    print(f"\n {userStoryEval.refactored.description}")
-    print(f"\n {userStoryEval.refactored.acceptance_criteria}")
-    print(f"\n {userStoryEval.labels}")
-    # update_github_issue(
-    #     issue,
-    #     title=userStoryEval.suggestions.title,
-    #     body=userStoryEval.suggestions.body_markdown(),
-    #     labels=userStoryEval.labels,
-    # )
+
+    update_github_issue(
+        issue,
+        title=userStoryEval.suggestions.title,
+        body=userStoryEval.suggestions.body_markdown(),
+        labels=userStoryEval.labels,
+    )
 
 
-    # quoted_body = "\n".join([f"> {line}" for line in userStoryEval.to_markdown().strip().splitlines()])
+    quoted_body = "\n".join([f"> {line}" for line in userStoryEval.to_markdown().strip().splitlines()])
 
-    # # Confirmation comment quoting the original enhancement comment
-    # confirmation_comment = (
-    #     f"✅ Applied enhancements based on the following comment:\n\n"
-    #     f"{quoted_body}"
-    # )
+    # Confirmation comment quoting the original enhancement comment
+    confirmation_comment = (
+        f"✅ Applied enhancements based on the following comment:\n\n"
+        f"{quoted_body}"
+    )
 
-    # create_github_issue_comment(
-    #     issue, confirmation_comment
-    # )
+    create_github_issue_comment(
+        issue, confirmation_comment
+    )
 
 def main() -> None:
     """Main entry point for the issue enhancer agent."""
