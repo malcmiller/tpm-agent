@@ -29,20 +29,15 @@ class UserStoryRefactored:
         lines = markdown.splitlines()
         section = None
         for line in lines:
-            line_stripped = line.strip()
-            if line_stripped.startswith("**Title**:") or line_stripped.startswith("Title:"):
-                title = line_stripped.split(":", 1)[-1].strip()
-                section = None
-            elif line_stripped.startswith("**Description**:") or line_stripped.startswith("Description:"):
-                description = line_stripped.split(":", 1)[-1].strip()
-                section = None
-            elif line_stripped.startswith("**Acceptance Criteria**:") or line_stripped.startswith("Acceptance Criteria:"):
+            if line.strip().startswith("**Title**:"):
+                title = line.split(":", 1)[-1].strip()
+            elif line.strip().startswith("**Description**:"):
+                description = line.split(":", 1)[-1].strip()
+            elif line.strip().startswith("**Acceptance Criteria**:"):
                 section = "acceptance_criteria"
-            elif section == "acceptance_criteria" and line_stripped.startswith("-"):
-                acceptance_criteria.append(line_stripped.lstrip("- ").strip())
-            elif section == "acceptance_criteria" and not line_stripped:
-                continue  # skip blank lines in criteria
-            elif section == "acceptance_criteria" and not line_stripped.startswith("-"):
+            elif section == "acceptance_criteria" and line.strip().startswith("-"):
+                acceptance_criteria.append(line.lstrip("- ").strip())
+            elif section == "acceptance_criteria" and not line.strip().startswith("-"):
                 section = None
         return cls(title=title, description=description, acceptance_criteria=acceptance_criteria)
 
