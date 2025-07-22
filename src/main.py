@@ -23,7 +23,6 @@ from response_models import UserStoryEvalResponse
 
 COMMENT_LOOKUP = "/apply"
 
-
 def handle_github_issues_event(issue: Issue, kernel: Kernel) -> None:
     """
     Handle GitHub issue events by generating and posting an AI-enhanced evaluation comment.
@@ -33,6 +32,7 @@ def handle_github_issues_event(issue: Issue, kernel: Kernel) -> None:
     try:
         response_text = asyncio.run(run_completion(kernel, messages))
         response = UserStoryEvalResponse.from_text(response_text).to_markdown()
+
         create_github_issue_comment(issue, response)
         print(f"AI Response for Issue {issue.number} (Markdown):\n\n{response}")
     except Exception as e:
@@ -141,7 +141,7 @@ def main() -> None:
             )
             sys.exit(1)
         handle_github_comment_event(github_issue, int(github_issue_comment_id))
-        
+
     else:
         print(f"Unsupported GitHub event: {github_event_name}", file=sys.stderr)
         sys.exit(1)
