@@ -7,7 +7,7 @@ class UserStoryRefactored:
     def __init__(self, title: str = "", description: str = "", acceptance_criteria: Optional[List[str]] = None):
         self.title = title
         self.description = description
-        self.acceptance_criteria = acceptance_criteria or []
+        self.acceptance_criteria = acceptance_criteria
 
     @classmethod
     def from_dict(cls, data: dict):
@@ -29,15 +29,16 @@ class UserStoryRefactored:
         lines = markdown.splitlines()
         section = None
         for line in lines:
-            if line.strip().startswith("**Title**:"):
-                title = line.split(":", 1)[-1].strip()
-            elif line.strip().startswith("**Description**:"):
-                description = line.split(":", 1)[-1].strip()
-            elif line.strip().startswith("**Acceptance Criteria**:"):
+            l = line.strip().lower()
+            if l.startswith("**title**:"):
+                title = l.split(":", 1)[-1].strip()
+            elif l.startswith("**description**:"):
+                description = l.split(":", 1)[-1].strip()
+            elif l.startswith("**acceptance criteria**:"):
                 section = "acceptance_criteria"
-            elif section == "acceptance_criteria" and line.strip().startswith("-"):
-                acceptance_criteria.append(line.lstrip("- ").strip())
-            elif section == "acceptance_criteria" and not line.strip().startswith("-"):
+            elif section == "acceptance_criteria" and l.startswith("-"):
+                acceptance_criteria.append(l.lstrip("- ").strip())
+            elif section == "acceptance_criteria" and not l.startswith("-"):
                 section = None
         return cls(title=title, description=description, acceptance_criteria=acceptance_criteria)
 
