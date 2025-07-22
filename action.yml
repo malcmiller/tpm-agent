@@ -21,6 +21,9 @@ inputs:
   github_token:
     description: 'GitHub token with repo access'
     required: true
+  github_issue_comment_id:
+    description: 'GitHub comment id'
+    required: true
   azure_openai_target_uri:
     description: 'Azure OpenAI target URI'
     required: true
