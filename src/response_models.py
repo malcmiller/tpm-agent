@@ -41,13 +41,26 @@ class UserStorySuggestions:
         return cls(title=title, description=description, acceptance_criteria=acceptance_criteria)
 
     def to_markdown(self) -> str:
+        """
+        Convert the suggestions to a markdown string.
+        """
         lines = []
         if self.title:
-            lines.append(f"**Title**: {self.title}\n\n")
+            lines.append(f"**Title**: {self.title}\n")
+        body = self.body_markdown()
+        if body:
+            lines.append(body)
+        return "\n".join(lines)
+
+    def body_markdown(self) -> str:
+        """
+        Convert the description and acceptance criteria to a markdown string.
+        """
+        lines = []
         if self.description:
-            lines.append(f"**Description**: {self.description}\n\n")
+            lines.append(f"**Description**: {self.description}\n")
         if self.acceptance_criteria:
-            lines.append("**Acceptance Criteria**:")
+            lines.append("**Acceptance Criteria:**")
             for criterion in self.acceptance_criteria:
                 lines.append(f"- {criterion}")
         return "\n".join(lines)
