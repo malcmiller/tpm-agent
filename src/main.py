@@ -58,7 +58,7 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
     )
 
 
-    quoted_body = "\n".join([f"> {line}" for line in ai_enhanced_comment.body.strip().splitlines()])
+    quoted_body = "\n".join([f"> {line}" for line in userStoryEval.to_markdown().strip().splitlines()])
 
     # Confirmation comment quoting the original enhancement comment
     confirmation_comment = (
