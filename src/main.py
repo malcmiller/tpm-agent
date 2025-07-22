@@ -52,8 +52,8 @@ def handle_github_comment_event(issue: Issue, issue_comment_id: int) -> None:
 
     update_github_issue(
         issue,
-        title=userStoryEval.suggestions.title,
-        body=userStoryEval.suggestions.body_markdown(),
+        title=userStoryEval.refactored.title,
+        body=userStoryEval.refactored.body_markdown(),
         labels=userStoryEval.labels,
     )
 
